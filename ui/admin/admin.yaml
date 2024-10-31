@@ -1,0 +1,356 @@
+about:
+  date: October 31, 2024 15:44:53
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+authentication: '{system-default}'
+info:
+  number_relationships: 10
+  number_tables: 12
+info_toggle_checked: true
+resources:
+  Appointment:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: doctor_id
+      required: true
+    - name: patient_id
+      required: true
+    - name: appointment_date
+      required: true
+      type: DATETIME
+    - name: status
+      required: true
+    description: Represents an appointment made by a patient with a doctor.
+    info_list: Represents an appointment made by a patient with a doctor.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - appointment_id
+      name: BillingList
+      resource: Billing
+    - direction: tomany
+      fks:
+      - appointment_id
+      name: PrescriptionList
+      resource: Prescription
+    - direction: toone
+      fks:
+      - doctor_id
+      name: doctor
+      resource: Doctor
+    - direction: toone
+      fks:
+      - patient_id
+      name: patient
+      resource: Patient
+    type: Appointment
+    user_key: id
+  Billing:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: appointment_id
+      required: true
+    - name: amount_due
+      required: true
+    - name: date_issued
+      type: DATETIME
+    description: Represents the billing information for a patient's appointment.
+    info_list: Represents the billing information for a patient's appointment.
+    tab_groups:
+    - direction: toone
+      fks:
+      - appointment_id
+      name: appointment
+      resource: Appointment
+    type: Billing
+    user_key: id
+  Doctor:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: specialization
+      required: true
+    - name: phone
+    - name: email
+    - name: id
+    description: Represents a doctor with specialization and contact details.
+    info_list: Represents a doctor with specialization and contact details.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - doctor_id
+      name: AppointmentList
+      resource: Appointment
+    - direction: tomany
+      fks:
+      - from_doctor_id
+      name: ReferralList
+      resource: Referral
+    - direction: tomany
+      fks:
+      - doctor_id
+      name: ScheduleList
+      resource: Schedule
+    type: Doctor
+    user_key: name
+  Insurance:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: patient_id
+      required: true
+    - name: provider
+      required: true
+    - name: plan
+      required: true
+    - name: coverage_amount
+      required: true
+    description: Contains details about a patient's insurance plan.
+    info_list: Contains details about a patient's insurance plan.
+    tab_groups:
+    - direction: toone
+      fks:
+      - patient_id
+      name: patient
+      resource: Patient
+    type: Insurance
+    user_key: id
+  MedicalRecord:
+    attributes:
+    - label: ' description*'
+      name: description
+      required: true
+      search: true
+      sort: true
+    - name: patient_id
+      required: true
+    - name: record_date
+      type: DATETIME
+    - name: id
+    description: Represents the medical records/history of a patient.
+    info_list: Represents the medical records/history of a patient.
+    tab_groups:
+    - direction: toone
+      fks:
+      - patient_id
+      name: patient
+      resource: Patient
+    type: MedicalRecord
+    user_key: description
+  Patient:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: gender
+    - name: phone
+    - name: email
+    - name: address
+    - name: id
+    description: Represents a patient with personal details and contact information.
+    info_list: Represents a patient with personal details and contact information.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - patient_id
+      name: AppointmentList
+      resource: Appointment
+    - direction: tomany
+      fks:
+      - patient_id
+      name: InsuranceList
+      resource: Insurance
+    - direction: tomany
+      fks:
+      - patient_id
+      name: MedicalRecordList
+      resource: MedicalRecord
+    - direction: tomany
+      fks:
+      - patient_id
+      name: ReferralList
+      resource: Referral
+    - direction: tomany
+      fks:
+      - patient_id
+      name: TreatmentList
+      resource: Treatment
+    type: Patient
+    user_key: name
+  Prescription:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: appointment_id
+      required: true
+    - name: medication
+      required: true
+    - name: dosage
+      required: true
+    - name: notes
+    description: Contains prescriptions issued to a patient during an appointment.
+    info_list: Contains prescriptions issued to a patient during an appointment.
+    tab_groups:
+    - direction: toone
+      fks:
+      - appointment_id
+      name: appointment
+      resource: Appointment
+    type: Prescription
+    user_key: id
+  Procedure:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: cost
+      required: true
+    - name: duration
+      required: true
+    - name: id
+    description: Represents a medical procedure that can be performed.
+    info_list: Represents a medical procedure that can be performed.
+    type: Procedure
+    user_key: name
+  Referral:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: from_doctor_id
+      required: true
+    - name: patient_id
+      required: true
+    - name: to_specialist
+      required: true
+    - name: reason
+    - name: date_given
+      type: DATETIME
+    description: Represents a referral given to a patient for another specialist.
+    info_list: Represents a referral given to a patient for another specialist.
+    tab_groups:
+    - direction: toone
+      fks:
+      - from_doctor_id
+      name: from_doctor
+      resource: Doctor
+    - direction: toone
+      fks:
+      - patient_id
+      name: patient
+      resource: Patient
+    type: Referral
+    user_key: id
+  Room:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: room_number
+      required: true
+    - name: floor
+    - name: availability
+      required: true
+    description: Represents a room used for conducting appointments.
+    info_list: Represents a room used for conducting appointments.
+    type: Room
+    user_key: id
+  Schedule:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: doctor_id
+      required: true
+    - name: weekday
+      required: true
+    - name: start_time
+      required: true
+      type: DATETIME
+    - name: end_time
+      required: true
+      type: DATETIME
+    description: Represents a doctor's schedule including working hours and breaks.
+    info_list: Represents a doctor's schedule including working hours and breaks.
+    tab_groups:
+    - direction: toone
+      fks:
+      - doctor_id
+      name: doctor
+      resource: Doctor
+    type: Schedule
+    user_key: id
+  Treatment:
+    attributes:
+    - label: ' description*'
+      name: description
+      required: true
+      search: true
+      sort: true
+    - name: patient_id
+      required: true
+    - name: start_date
+      type: DATETIME
+    - name: id
+    description: Represents a treatment plan assigned to a patient.
+    info_list: Represents a treatment plan assigned to a patient.
+    tab_groups:
+    - direction: toone
+      fks:
+      - patient_id
+      name: patient
+      resource: Patient
+    type: Treatment
+    user_key: description
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: LL
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    detail_mode: tab
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: 'false'
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    new_mode: dialog
+    pick_style: list
+    row_height: small,
+    serviceType: OntimizeEE
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: 'false'
